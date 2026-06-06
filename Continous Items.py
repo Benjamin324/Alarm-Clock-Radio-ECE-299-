@@ -6,7 +6,7 @@ from ssd1306 import SSD1306_SPI
 import utime
 import time
 import framebuf
-from lcd_lib import LCD_1inch3 as LCD #Change font
+
 
         ##### Initalize Display
 
@@ -116,19 +116,31 @@ class Radio:
 fm_radio = Radio( 101.9, 5, False ) #initialize radio module
 
 
+        ###Main
+
+while True:
+    
+    oled.fill(0) #clear buffer
+
         ####Continuous Items
 
-        #Convert to Local time(not Implemented)
-#machine.RTC().datetime(thistuple)
+        #Convert to Local time(not Implemented)(NOT NEEDED??)
+    #machine.RTC().datetime(thistuple)
 
         #Time Top Right
-
-time_text = str((time.localtime()[3]) )+ ":" + str(time.localtime()[4]) 
-print(time_text)
-while True:
-    oled.fill(0) #clear buffer
-   # radio_text = str(fm_radio.GetSettings()[2]) + " fm"
-   # oled.fill(0) # clear buffer
-    LCD.write_text(time_text,x=0,y=0,size=1,color=1)
+    Sec_Time = "{:02d}:{:02d}".format((time.localtime()[3]),(time.localtime()[4]),) #Top right TIME
+    oled.text(Sec_Time,87,0,1)
+        
+        #Volume bar
+    Volume = (fm_radio.GetSettings()[1])
+    oled.rect(40,55,3*Volume,5,1,1) #filled in part
+    oled.rect(40+3*Volume,55,3*(15-Volume),5,1,0) #empty part
+    
+    
+    
     oled.show()
-    LCD.show()
+    utime.sleep(1)
+    
+    
+    
+    
