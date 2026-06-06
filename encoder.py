@@ -10,152 +10,6 @@ import framebuf # this is another library for the display.
 SCREEN_WIDTH = 128 #number of columns
 SCREEN_HEIGHT = 64 #number of rows
 
-EncoderState = 0
-UpdateDisplay = True
-
-#
-# Encoder service routine for terminal A and B
-#
-
-def DoEncoder( Encoder, State ):
-    global EncoderState
-    global Count
-    global UpdateDisplay
-
-#
-# Debug output
-#
-#    print( EncoderState, Encoder, State )
-
-    if ( EncoderState == 0 ):
-#
-# Check for input A going low ( encoder turning left )
-#
-        if (( Encoder == 'A' ) and ( State == 4 )):
-            EncoderState = 1
-
-#
-# Check for input B going low ( encoder turning right )
-#
-        if (( Encoder == 'B' ) and ( State == 4 )):
-            EncoderState = 4
-
-#
-# Encoding turing right squence ( A=0 then B=0 then A=1 and finally B=1 )
-#
-
-    elif( EncoderState == 1 ):
-#        
-# This should be input B going low
-#
-        if (( Encoder == 'B' ) and ( State == 4 )):
-            EncoderState = 2
-        else:
-            EncoderState = 0
-            
-    elif ( EncoderState == 2 ):
-#
-# This should be input A going high
-#        
-        if (( Encoder == 'A' ) and ( State == 8 )):
-            EncoderState = 3
-        else:
-            EncoderState = 0
-            
-    elif ( EncoderState == 3 ):
-#
-# Finally input B should go high
-#
-        if (( Encoder == 'B' ) and ( State == 8 )):
-
-#
-# The shaft is turing right so increment the count
-#            
-            if ( Count < 99 ):
-                Count = Count + 1
-                UpdateDisplay = True
-
-               
-        EncoderState = 0
-
-
-#
-# Encoding turing left squence ( B=0 then A=0 then B=1 and finally A=1 )
-#
-
-    elif ( EncoderState == 4 ):
-#        
-# This should be input A going low
-#        
-        if (( Encoder == 'A' ) and ( State == 4 )):
-            EncoderState = 5
-        else:
-            EncoderState = 0
-            
-    elif ( EncoderState == 5 ):
-#        
-# This should be input B going high
-#        
-        if (( Encoder == 'B' ) and ( State == 8 )):
-            EncoderState = 6
-        else:
-            EncoderState = 0
-                        
-    elif ( EncoderState == 6 ):
-#        
-# This should be input A going high
-#        
-        if (( Encoder == 'A' ) and ( State == 8 )):
-#
-# The shaft is turing left so decrement the count
-#
-            if ( Count != 0 ):
-                Count = Count - 1
-                UpdateDisplay = True
-
-        EncoderState = 0
-
-    else:
-        EncoderState = 0
-            
-    return( True )
-
-#
-# Service terminal A interrupt
-#
-
-def EncoderAInterrupt( Pin ):
-    DoEncoder( 'A', Pin.irq().flags())
-    return( True )
-
-#
-# Service terminal B interrupt
-#
-
-def EncoderBInterrupt( Pin ):
-    DoEncoder( 'B', Pin.irq().flags())
-    return( True )
-
-#
-# GPIO 4 ( Pin 6 ) is connected to terminal A on the encoder
-#
-EncoderA = Pin( 1, Pin.IN, Pin.PULL_UP )
-
-#
-# GPIO 2 ( Pin 4 ) is connected to terminal B on the encoder
-#
-
-EncoderB = Pin( 2, Pin.IN, Pin.PULL_UP)
-
-#
-# Enable interrupt detection for both rising and falling edges of both signals
-#
-
-EncoderA.irq( handler= EncoderAInterrupt, trigger=Pin.IRQ_FALLING | Pin.IRQ_RISING, hard=True )
-EncoderB.irq( handler= EncoderBInterrupt, trigger=Pin.IRQ_FALLING | Pin.IRQ_RISING, hard=True )
- 
-
-
 
 # Initialize I/O pins associated with the oled display SPI interface
 
@@ -183,7 +37,6 @@ oled = SSD1306_SPI( SCREEN_WIDTH, SCREEN_HEIGHT, oled_spi, spi_dc, spi_res, spi_
 
 # Assign a value to a variable
 count = 50
-from machine import Pin
 
 
 a = Pin(1, Pin.IN, Pin.PULL_UP)
@@ -198,7 +51,7 @@ def encoder_irq(pin):
 
     if current_a != last_a:
         if b.value() != current_a:
-            count += 0.5
+            count += 1
         else:
             count -= 1
 
