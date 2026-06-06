@@ -112,7 +112,7 @@ class Radio:
         return( MuteStatus, VolumeStatus, FrequencyStatus, StereoStatus )
 
         ##### Initialize Button and leds
-re_button = machine.Pin(16,machine.Pin.IN,Pin.PULL_DOWN)
+button = machine.Pin(16,machine.Pin.IN,Pin.PULL_DOWN)
 volume = 5
         ##### Main
 bck = 0 #Default background is black
@@ -130,14 +130,24 @@ while True:
     
         
         #Volume bar
-    oled.rect(40,55,3*volume,5,1,1) #filled in part
-    oled.rect(40+3*volume,55,3*(15-volume),5,1,0) #empty part
-  
-  
-          #re button**
-    
+    Volume = (fm_radio.GetSettings()[1])
+    oled.rect(40,55,3*Volume,5,1,1) #filled in part
+    oled.rect(40+3*Volume,55,3*(15-Volume),5,1,0) #empty part
+   
+    print(button.value())
+    if (button.value() == 0 ): 
+        if (volume > 15):
+            volume = 1
+        volume = volume + 1
+        time.sleep(0.3)
+        if ( fm_radio.SetVolume( volume ) == True ):
+            fm_radio.ProgramRadio()
+            while(button.value() == 0):
+                pass
     
      ####Main Display*(Not Integrated)
+
+      
 
         #Time Center
     Main_Time = "{:02d}:{:02d}:{:02d}".format((time.localtime()[3]),(time.localtime()[4]),(time.localtime()[5])) 

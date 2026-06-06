@@ -1,40 +1,40 @@
+from ssd1306 import SSD1306_SPI
 from machine import Pin,SPI,PWM
 import framebuf
 import time
 import os
 
-BL = 13
-DC = 8
-RST = 12
-MOSI = 11
-SCK = 10
-CS = 9
+SCREEN_WIDTH = 128
+SCREEN_HEIGHT = 64
+spi_sck = Pin(18)
+spi_sda = Pin(19)
+spi_res = Pin(21)
+spi_dc  = Pin(20)
+spi_cs  = Pin(17) 
+SPI_DEVICE = 0
+oled_spi = SPI( SPI_DEVICE, baudrate= 100000, sck= spi_sck, mosi= spi_sda )
+oled = SSD1306_SPI( SCREEN_WIDTH, SCREEN_HEIGHT, oled_spi, spi_dc, spi_res, spi_cs, True )
 
 
 class LCD_1inch3(framebuf.FrameBuffer):
     def __init__(self):
-        self.width = 240
-        self.height = 240
+        self.width = 128
+        self.height = 64
         
-        self.cs = Pin(CS,Pin.OUT)
-        self.rst = Pin(RST,Pin.OUT)
-        
-        self.cs(1)
-        self.spi = SPI(1)
-        self.spi = SPI(1,1000_000)
-        self.spi = SPI(1,100000_000,polarity=0, phase=0,sck=Pin(SCK),mosi=Pin(MOSI),miso=None)
-        self.dc = Pin(DC,Pin.OUT)
-        self.dc(1)
-        self.buffer = bytearray(self.height * self.width * 2)
+        #Removed Blue R G  
+        self.white =   1
+        self.black =   0
+         # Add buffer and FrameBuffer init
+        self.buffer = bytearray(self.width * self.height * 2)
         super().__init__(self.buffer, self.width, self.height, framebuf.RGB565)
+
+        # Add pins (reuse your existing SPI pins)
+        self.cs  = Pin(17, Pin.OUT)
+        self.dc  = Pin(20, Pin.OUT)
+        self.rst = Pin(21, Pin.OUT)
+        self.spi = SPI(0, baudrate=100000, sck=Pin(18), mosi=Pin(19))
+
         self.init_display()
-        # B-R-G
-        self.red   =   0x07E0
-        self.green =   0x001f
-        self.blue  =   0xf800
-        self.white =   0xffff
-        self.black =   0x0000
-        
     def write_cmd(self, cmd):
         self.cs(1)
         self.dc(0)

@@ -51,9 +51,9 @@ def encoder_irq(pin):
 
     if current_a != last_a:
         if b.value() != current_a:
-            count += 1
+            count += 0.5
         else:
-            count -= 1
+            count -= 0.5
 
         print(count)
 

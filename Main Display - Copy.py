@@ -111,40 +111,23 @@ class Radio:
             StereoStatus = False
         return( MuteStatus, VolumeStatus, FrequencyStatus, StereoStatus )
 
-        ##### Initialize Button and leds
-re_button = machine.Pin(16,machine.Pin.IN,Pin.PULL_DOWN)
-volume = 5
+
         ##### Main
-bck = 0 #Default background is black
-fm_radio = Radio( 101.9, volume, False )
+
+fm_radio = Radio( 101.9, 5, False )
 
 while True:
     oled.fill(0) #clear buffer
-
-        ####Continuous Items*(Not Integrated )
-
-
-        #Time Top Right
-    Sec_Time = "{:02d}:{:02d}".format((time.localtime()[3]),(time.localtime()[4]),) 
-    oled.text(Sec_Time,87,0,1)
-    
-        
-        #Volume bar
-    oled.rect(40,55,3*volume,5,1,1) #filled in part
-    oled.rect(40+3*volume,55,3*(15-volume),5,1,0) #empty part
-  
-  
-          #re button**
     
     
-     ####Main Display*(Not Integrated)
+     ####Main Display
 
         #Time Center
     Main_Time = "{:02d}:{:02d}:{:02d}".format((time.localtime()[3]),(time.localtime()[4]),(time.localtime()[5])) 
     oled.text(Main_Time,32,32,1)
     
-        
-        
+    
+    
     oled.show()
        
     
