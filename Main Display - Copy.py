@@ -3,7 +3,6 @@
 import machine
 from machine import Pin, SPI, I2C
 from ssd1306 import SSD1306_SPI
-import utime
 import time
 import framebuf
 
@@ -112,35 +111,24 @@ class Radio:
             StereoStatus = False
         return( MuteStatus, VolumeStatus, FrequencyStatus, StereoStatus )
 
-    
-fm_radio = Radio( 101.9, 5, False ) #initialize radio module
 
+        ##### Main
 
-        ###Main
+fm_radio = Radio( 101.9, 5, False )
 
 while True:
-    
     oled.fill(0) #clear buffer
+    
+    
+     ####Main Display
 
-        ####Continuous Items
-
-        #Convert to Local time(not Implemented)(NOT NEEDED??)
-    #machine.RTC().datetime(thistuple)
-
-        #Time Top Right
-    Sec_Time = "{:02d}:{:02d}".format((time.localtime()[3]),(time.localtime()[4]),) #Top right TIME
-    oled.text(Sec_Time,87,0,1)
-        
-        #Volume bar
-    Volume = (fm_radio.GetSettings()[1])
-    oled.rect(40,55,3*Volume,5,1,1) #filled in part
-    oled.rect(40+3*Volume,55,3*(15-Volume),5,1,0) #empty part
+        #Time Center
+    Main_Time = "{:02d}:{:02d}:{:02d}".format((time.localtime()[3]),(time.localtime()[4]),(time.localtime()[5])) 
+    oled.text(Main_Time,32,32,1)
     
     
     
     oled.show()
-    utime.sleep(1)
-    
-    
+       
     
     
