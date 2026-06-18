@@ -1,7 +1,7 @@
         ### Import Libraries
 
 from machine import Pin, SPI, I2C
-from ssd1306 import SSD1306_SPI
+from ssd1309 import SSD1309_SPI
 import framebuf
 import time
 
@@ -17,7 +17,7 @@ spi_dc  = Pin(20)
 spi_cs  = Pin(17) 
 SPI_DEVICE = 0
 oled_spi = SPI( SPI_DEVICE, baudrate= 100000, sck= spi_sck, mosi= spi_sda )
-oled = SSD1306_SPI( SCREEN_WIDTH, SCREEN_HEIGHT, oled_spi, spi_dc, spi_res, spi_cs, True )
+oled = SSD1309_SPI( SCREEN_WIDTH, SCREEN_HEIGHT, oled_spi, spi_dc, spi_res, spi_cs, True )
 
 
         ### Init Radio
